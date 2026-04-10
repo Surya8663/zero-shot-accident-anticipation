@@ -128,29 +128,29 @@ Load test.csv (1,417 clips)
 For each clip:
   │
   ├──► [SIGNAL 1] NLP Caption Prior ──────────────────────────────────┐
-  │      │                                                             │
+  │      │                                                            │
   │      ├── Encode caption with all-MiniLM-L6-v2                     │
-  │      ├── Cosine sim vs sudden anchors & gradual anchors            │
+  │      ├── Cosine sim vs sudden anchors & gradual anchors           │
   │      ├── danger_score = (sudden_sim - gradual_sim + 1) / 2        │
   │      ├── t0 = linear map [score_min→score_max] to [30→10]         │
   │      ├── t0 += start_frame correction (p25/p75 percentile)        │
   │      └── p_caption(t) = sigmoid(t - t0, k=0.42)              ────►┤
-  │                                                                    │
+  │                                                                   │
   ├──► [SIGNAL 2] CLIP Visual Scoring (if video available) ───────────┤
-  │      │                                                             │
+  │      │                                                            │
   │      ├── Load 150 frames from images/ folder                      │
-  │      ├── For each frame: CLIP cosine sim(frame, danger_prompt)     │
-  │      │       danger = "dangerous accident collision crash"          │
-  │      │       safe   = "normal safe driving no hazard"              │
-  │      └── p_clip(t) = softmax_danger_score per frame           ────►┤
-  │                                                                    │
+  │      ├── For each frame: CLIP cosine sim(frame, danger_prompt)    │
+  │      │       danger = "dangerous accident collision crash"        │
+  │      │       safe   = "normal safe driving no hazard"             │
+  │      └── p_clip(t) = softmax_danger_score per frame          ────►┤
+  │                                                                   │
   ├──► [SIGNAL 3] Optical Flow Motion (if video available) ───────────┤
-  │      │                                                             │
+  │      │                                                            │
   │      ├── For each frame t: diff = |frame(t) - frame(t-1)|         │
   │      ├── motion(t) = mean pixel difference                        │
   │      └── p_flow(t) = normalize(motion) to [0,1]              ────►┤
-  │                                                                    │
-  ▼                                                                    │
+  │                                                                   │
+  ▼                                                                   │
 ENSEMBLE ◄──────────────────────────────────────────────────────────┘
   │
   ├── raw(t) = 0.55·p_clip + 0.25·p_flow + 0.20·p_caption
